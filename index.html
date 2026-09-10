@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Castle Virtual Tour & AR Experience</title>
+    <title>Castle Virtual Tour & AR Guide</title>
     <style>
         :root {
             --bg-color: #000000;
@@ -14,8 +14,6 @@
             --text-muted: #a0a0a0;
             --btn-ar: #2b6cb0;
             --btn-ar-hover: #3182ce;
-            --btn-video: #2d3748;
-            --btn-video-hover: #4a5568;
         }
 
         * {
@@ -61,21 +59,82 @@
             gap: 20px;
         }
 
+        .guide-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2c2c2c;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .guide-card h2 {
+            font-size: 16px;
+            color: var(--gold);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .steps-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 12px;
+            border-left: 2px solid var(--gold);
+        }
+
+        .step-num {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .step-item h3 {
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .step-item p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
         .tour-card {
             background-color: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid #2c2c2c;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-info {
+            padding: 20px 20px 12px 20px;
+            border-bottom: 1px solid #2c2c2c;
         }
 
         .tour-card h2 {
             font-size: 16px;
             color: var(--gold);
-            padding: 16px 20px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid #2c2c2c;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
         .card-media {
@@ -86,21 +145,18 @@
             overflow: hidden;
         }
 
-        .card-media img {
+        .card-media iframe {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            opacity: 0.85;
+            border: none;
         }
 
         .card-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
             padding: 16px 20px;
         }
 
         .btn {
+            width: 100%;
             padding: 12px;
             border: none;
             border-radius: 6px;
@@ -108,6 +164,8 @@
             font-weight: 600;
             cursor: pointer;
             text-align: center;
+            text-decoration: none;
+            display: inline-block;
             transition: background 0.2s, transform 0.1s;
         }
 
@@ -119,70 +177,9 @@
             background-color: var(--btn-ar);
             color: #fff;
         }
+
         .btn-ar:hover {
             background-color: var(--btn-ar-hover);
-        }
-
-        .btn-video {
-            background-color: var(--btn-video);
-            color: var(--text-main);
-            border: 1px solid #4a5568;
-        }
-        .btn-video:hover {
-            background-color: var(--btn-video-hover);
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: 12px;
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-            border: 1px solid var(--gold);
-        }
-
-        .modal-content h3 {
-            color: var(--gold);
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .modal-content p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        .modal-close {
-            background: var(--gold);
-            color: #000;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -193,73 +190,47 @@
     </header>
 
     <main class="content-container">
+        <!-- AR Instructions Section -->
+        <section class="guide-card">
+            <h2>How to Experience the AR Tour</h2>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <span class="step-num">1</span>
+                    <h3>Scan QR Code</h3>
+                    <p>Scan the code placed at the entrance or near exhibition points using your phone camera.</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">2</span>
+                    <h3>Allow Camera</h3>
+                    <p>Grant camera permissions in your browser to enable spatial tracking.</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">3</span>
+                    <h3>Point & Discover</h3>
+                    <p>Point your camera at the designated area. The animated character will pop up to share historical insights.</p>
+                </div>
+                <div class="step-item">
+                    <span class="step-num">4</span>
+                    <h3>Close AR</h3>
+                    <p>Tap the close button on your screen whenever you are finished to exit the AR view.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Grand Hall Card -->
         <div class="tour-card">
-            <h2>Grand Hall</h2>
+            <div class="card-info">
+                <h2>Grand Hall</h2>
+                <p class="card-desc">The magnificent main hall featuring vaulted ceilings and historic medieval architecture.</p>
+            </div>
             <div class="card-media">
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='200' fill='%23222'><rect width='600' height='200'/><text x='50%' y='50%' fill='%23666' font-size='16' text-anchor='middle' dominant-baseline='middle'>Grand Hall Preview Asset</text></svg>" alt="Grand Hall">
+                <iframe src="https://www.youtube.com/embed/5_g4DW_l6q0" title="Grand Hall Video Tour" allowfullscreen></iframe>
             </div>
             <div class="card-actions">
-                <button class="btn btn-ar" onclick="triggerAction('Grand Hall', 'AR')">Launch AR</button>
-                <button class="btn btn-video" onclick="triggerAction('Grand Hall', 'Video')">Watch Video</button>
-            </div>
-        </div>
-
-        <!-- Dining Room Card -->
-        <div class="tour-card">
-            <h2>Dining Room</h2>
-            <div class="card-media">
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='200' fill='%23222'><rect width='600' height='200'/><text x='50%' y='50%' fill='%23666' font-size='16' text-anchor='middle' dominant-baseline='middle'>Dining Room Preview Asset</text></svg>" alt="Dining Room">
-            </div>
-            <div class="card-actions">
-                <button class="btn btn-ar" onclick="triggerAction('Dining Room', 'AR')">Launch AR</button>
-                <button class="btn btn-video" onclick="triggerAction('Dining Room', 'Video')">Watch Video</button>
-            </div>
-        </div>
-
-        <!-- Library Card -->
-        <div class="tour-card">
-            <h2>Library</h2>
-            <div class="card-media">
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='200' fill='%23222'><rect width='600' height='200'/><text x='50%' y='50%' fill='%23666' font-size='16' text-anchor='middle' dominant-baseline='middle'>Library Preview Asset</text></svg>" alt="Library">
-            </div>
-            <div class="card-actions">
-                <button class="btn btn-ar" onclick="triggerAction('Library', 'AR')">Launch AR</button>
-                <button class="btn btn-video" onclick="triggerAction('Library', 'Video')">Watch Video</button>
+                <a href="https://williamcoloney.netlify.app/" target="_blank" rel="noopener noreferrer" class="btn btn-ar">Launch AR Experience</a>
             </div>
         </div>
     </main>
 
-    <!-- Interactive Feedback Modal -->
-    <div class="modal" id="actionModal">
-        <div class="modal-content">
-            <h3 id="modalTitle">Experience Triggered</h3>
-            <p id="modalText">Initializing module...</p>
-            <button class="modal-close" onclick="closeModal()">Close</button>
-        </div>
-    </div>
-
-    <script>
-        function triggerAction(roomName, type) {
-            const modal = document.getElementById('actionModal');
-            const title = document.getElementById('modalTitle');
-            const text = document.getElementById('modalText');
-
-            if (type === 'AR') {
-                title.innerText = `Launching AR: ${roomName}`;
-                text.innerText = `Initializing camera tracking and loading 3D avatar characters for the ${roomName}...`;
-            } else {
-                title.innerText = `Playing Video: ${roomName}`;
-                text.innerText = `Streaming high-definition video tour for the ${roomName}...`;
-            }
-
-            modal.classList.add('active');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('actionModal');
-            modal.classList.remove('active');
-        }
-    </script>
 </body>
 </html>
